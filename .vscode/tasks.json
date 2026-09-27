@@ -1,0 +1,26 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Flip7",
+            "type": "shell",
+            "command": "cl.exe",
+            "args": [
+                "/EHsc",
+                "/Zi",
+                "/nologo",
+                "/Fe:${workspaceFolder}/Flip7.exe",
+                "${workspaceFolder}/Flip7.cpp",
+                "${workspaceFolder}/Game.cpp",
+                "${workspaceFolder}/Players.cpp"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$msCompile"
+            ]
+        }
+    ]
+}
