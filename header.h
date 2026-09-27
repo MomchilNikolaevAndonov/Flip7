@@ -14,8 +14,9 @@ private:
 
 
 public: 
-   bool lose = false;
+    bool lose = false;
     bool round_end = false;
+    int round_score = 0;
     int score;
     int round_score = 0;
     

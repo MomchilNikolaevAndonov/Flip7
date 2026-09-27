@@ -66,7 +66,7 @@ using namespace std;
         char decision;
         cout <<  "Do you want to draw another card? (y/n): ";
         cin >> decision;
-
+  
         if (decision == 'n' || decision == 'N') {
             round_end = true;
             return false;
