@@ -1,20 +1,26 @@
-//
-// Created by Ivan on 24.9.2026 г..
-//
-
 #ifndef HEADER_H
 #define HEADER_H
-
 #include <vector>
 using namespace std;
 
+const int n_players = 4;
+const float MutateChance = 0.5;
+const float MutateAmount = 0.2;
+const vector<int> networkShape = {14, 14, 7, 1};
+
+
+
+vector<float> Brain(vector<float>);
+void MutateNetwork(float, float);
+
 class Players {
 private:
-    vector<int> cards;
+    
 
 
 public: 
-   bool lose = false;
+    vector<int> cards;
+    bool lose = false;
     bool round_end = false;
     int score;
     
@@ -26,11 +32,18 @@ public:
 
     bool check_lose();
 
-    void reset();
+    void reset_round();
+
+    void reset_game();
 
     void print_cards(int n);
 
-    bool player_decision(int n);
+    vector<float> player_decision(vector<float>);
+
+    void Mutate();
+ 
+    bool want_card(bool);
+    
 };
 
 class Game{

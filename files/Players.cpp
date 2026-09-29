@@ -44,12 +44,13 @@ using namespace std;
     }
 
 
-    void Players::reset(){
+    void Players::reset_round(){
         round_end = false;
         cards.clear();
     }
 
-    void Players::print_cards(int n){
+    void Players::print_cards(int i){
+        cout << "Player " << i + 1 << ": " << endl;
         cout << "Cards: ";
         for(int i = 0; i < cards.size(); i++){
             cout << cards[i] << " ";
@@ -60,21 +61,24 @@ using namespace std;
 
     }
 
-    bool Players::player_decision(int n){
-        char decision;
-        cout <<  "Do you want to draw another card? (y/n): ";
-        cin >> decision;
+    vector<float> Players::player_decision(vector<float> NN_inputs){
+        return Brain(NN_inputs);
+    }
 
-        if (decision == 'n' || decision == 'N') {
+    void Players::Mutate(){
+        MutateNetwork(MutateChance, MutateAmount);
+    }
+
+    bool Players::want_card(bool decision){
+
+        if (decision) {
             round_end = true;
             return round_end;
         }
-        else if (decision == 'y' || decision == 'Y') {
+        else if (decision) {
             round_end = false;
             return round_end;
         }
-        else {
-            cout << "Invalid input. Please enter 'y' or 'n'." << endl;
-            return player_decision(n); // Recursively ask again
-        }
-    }
+         exit(3);
+         return true;
+}
