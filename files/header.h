@@ -18,7 +18,6 @@ public:
     bool round_end = false;
     int round_score = 0;
     int score;
-    int round_score = 0;
     
     Players(); 
 
