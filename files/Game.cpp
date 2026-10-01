@@ -33,15 +33,22 @@ using namespace std;
     }
 
     
-    void Game::resuffle(int cards[]){
+    int Game::resuffle(int card_index){
 
         random_device rd;
         
         // 2. Initialize the standard Mersenne Twister engine with the seed
         mt19937 g(rd());
 
-        // 3. Shuffle the array
-        shuffle(cards, cards + 92, g);
+        if(card_index >= 92){
+            cout << "Deck is empty. Reshuffling..." << endl;
+            make_deck();
+            shuffle(deck, deck + 92, g);
+            card_index = 0;
+        }
+
+        return card_index;
+        
     }
 
     

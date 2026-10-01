@@ -24,7 +24,7 @@ using namespace std;
         score += value;
     }
 
-    bool Players::check_lose(){
+    void Players::check_lose(){
 
         // Sort the input array
         sort(cards.begin(), cards.end());
@@ -34,13 +34,15 @@ using namespace std;
 
             // Check if adjacent elements are equal
             if (cards[i] == cards[i - 1]){
+            // Set round_end to true if duplicate found
              round_end = true;
-             return  round_end;// Set round_end to true if duplicate found
+             lose = true;
+            return;
             }
 
         }
         // Set round_end to true if no duplicates found
-         return false;  // No duplicates, player does not lose
+         return;  // No duplicates, player does not lose
     }
 
 
@@ -49,8 +51,8 @@ using namespace std;
         cards.clear();
     }
 
-    void Players::print_cards(int i){
-        cout << "Player " << i + 1 << ": " << endl;
+    void Players::print_cards(int n){
+        cout << "Player " << n + 1 << ": " << endl;
         cout << "Cards: ";
         for(int i = 0; i < cards.size(); i++){
             cout << cards[i] << " ";
@@ -62,20 +64,20 @@ using namespace std;
     }
 
     vector<float> Players::player_decision(vector<float> NN_inputs){
-        return Brain(NN_inputs);
+        return nn.Brain(NN_inputs);
     }
 
     void Players::Mutate(){
-        MutateNetwork(MutateChance, MutateAmount);
+        nn.MutateNetwork(MutateChance, MutateAmount);
     }
 
     bool Players::want_card(bool decision){
 
-        if (decision) {
+        if (decision == 0) {
             round_end = true;
             return round_end;
         }
-        else if (decision) {
+        else if (decision == 1) {
             round_end = false;
             return round_end;
         }

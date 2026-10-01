@@ -1,28 +1,20 @@
 #ifndef HEADER_H
 #define HEADER_H
 #include <vector>
+#include "neural_network.h"
 using namespace std;
 
 const int n_players = 4;
-const float MutateChance = 0.5;
-const float MutateAmount = 0.2;
-const vector<int> networkShape = {14, 14, 7, 1};
-
-
-
-vector<float> Brain(vector<float>);
-void MutateNetwork(float, float);
 
 class Players {
 private:
     
-
-
 public: 
     vector<int> cards;
     bool lose = false;
     bool round_end = false;
-    int score;
+    int score = 0;
+    NN nn;
     
     Players(); 
 
@@ -30,7 +22,7 @@ public:
 
     void calc_score();
 
-    bool check_lose();
+    void check_lose();
 
     void reset_round();
 
@@ -46,6 +38,9 @@ public:
     
 };
 
+
+
+
 class Game{
     private:
    
@@ -59,7 +54,7 @@ class Game{
     
     void make_deck();
   
-    void resuffle(int cards[]);
+    int resuffle(int card_index);
    
 };
 

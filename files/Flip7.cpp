@@ -3,6 +3,7 @@
 #include <random>
 #include <vector>
 #include "header.h"
+#include "neural_network.h"
 
 
 using namespace std;
@@ -66,12 +67,11 @@ bool end_round(int n_players, Players players[]){
 
 double sigmoid(double x)
 {
-    return 1.0 / (1.0 + std::exp(-x));
+    return 1.0 / (1.0 + exp(-x));
 }
 
-bool make_choice(int NN_output){
-    double drawOutput = sigmoid(NN_output);
-
+bool make_choice(float NN_output){
+    float drawOutput = sigmoid(NN_output);
     if (drawOutput >= 0.5)
     {
         return true;
@@ -87,16 +87,17 @@ bool make_choice(int NN_output){
 int main()
 {
     //Game setup  
-    int card_index = 0;
     Game game;
     Players players[n_players];
+    NN nn;
     game.make_deck();  
-    game.resuffle(game.deck);
+    int card_index = game.resuffle(100);
+    nn.MutateNetwork(MutateChance, MutateAmount);
 
 
     vector<float> NN_output;
     vector<float> NN_inputs;
-do{ 
+
 
     // Game process  
     do{
@@ -104,6 +105,7 @@ do{
         for (int i = 0; i < n_players; i++) {
             players[i].reset_round();
             players[i].getCards(game.deck[card_index]);
+            
             card_index++;
          }
     
@@ -115,18 +117,27 @@ do{
                 if (players[i].round_end) 
                     continue;
                  
+                cout<<game.deck[0];
+                cout<<game.deck[1];    
                 //print the cards and ask if they want to draw another card
                 players[i].print_cards(i);
 
-                //ToDO:add the NN_inputs to the NN: num of every card(enemy self),current points(enemy/srlf), game points(enemy/self)
-                //NN_inputs = calc_NN_input(game.deck, players[i]);
+
+                NN_inputs = calc_NN_input(players[i]);
+                NN_output = players[i].nn.Brain(NN_inputs);
 
 
-                NN_inputs = calc_NN_input(players[i]);      
-                 
-                NN_output = players[i].player_decision(NN_inputs);
-                cout<<"ojvmoq greshaka ne si chak takuv"<<endl;  
+                for(int j = 0; j < NN_inputs.size(); j++){
+                    cout<<NN_inputs[j]<<" ";
+                }
+                cout<<endl;
+
+                //Clear NN
+                players[i].nn.clear_NN();
+                cout<<NN_output[0]<<endl;
+
                 bool NN_choice = make_choice(NN_output[0]);
+                cout<<"NN Choice: "<<NN_choice<<endl;
                 //TODO:add the NN_output to the decision
 
                 if (!players[i].want_card(NN_choice)) {
@@ -134,17 +145,15 @@ do{
                     card_index++;
                     players[i].print_cards(i);
                 }
+
+                card_index = game.resuffle(card_index);
                 
                 // Check if the deck is empty and reshuffle if necessary
-                if(card_index >= 92){
-                    cout << "Deck is empty. Reshuffling..." << endl;
-                    game.make_deck();  
-                    game.resuffle(game.deck);
-                    card_index = 0;
-               }
 
+               //check_deck();
                       
-                players[i].lose = players[i].check_lose();
+                players[i].check_lose();
+
                 if (players[i].round_end) {
                     cout << "Player " << i + 1 << ": ended the round!" << endl;
                 }
@@ -170,7 +179,6 @@ do{
         players[i].Mutate();
     }
 
-}while(true);
 
     cout << "Final Scores: " << endl;
     for (int i = 0; i < n_players; i++)
