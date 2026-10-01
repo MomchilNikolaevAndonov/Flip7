@@ -150,7 +150,6 @@ int main()
                 
                 // Check if the deck is empty and reshuffle if necessary
 
-               //check_deck();
                       
                 players[i].check_lose();
 
