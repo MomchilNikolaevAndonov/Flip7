@@ -51,6 +51,13 @@ using namespace std;
         cards.clear();
     }
 
+    void Players::reset_game(){
+        round_end = false;
+        lose = false;
+        score = 0;
+        cards.clear();
+    }
+
     void Players::print_cards(int n){
         cout << "Player " << n + 1 << ": " << endl;
         cout << "Cards: ";
@@ -60,7 +67,6 @@ using namespace std;
         cout << endl;
         cout  << "Points this round: " << score;
         cout << endl;
-
     }
 
     vector<float> Players::player_decision(vector<float> NN_inputs){

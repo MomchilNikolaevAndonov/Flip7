@@ -17,6 +17,47 @@ int size_of_arr(int arr[]){
     return sizeof(arr) / sizeof(arr[0]);
 }
 */
+
+void natural_selection(Players players[], int n_players){
+    // Sort players based on their scores in descending order
+    sort(players, players + n_players, [](const Players& a, const Players& b) {
+        return a.score > b.score;
+    });
+
+    for (int i = 1; i < n_players-1; ++i) {
+        players[1].nn.layers = players[0].nn.layers;
+        players[i].Mutate();
+    }
+
+}
+
+
+void mutate_ALL(int n_players, Players players[]){
+    for(int i = 0; i < n_players; i++){
+        players[i].Mutate();
+    }
+}
+
+// int check_winner(int n_players, Players players[]){
+//     int winner_index = -1;
+//     int max_score = -1;
+
+//     for (int i = 0; i < n_players; i++) {
+//         if (players[i].score > max_score) {
+//             max_score = players[i].score;
+//             winner_index = i;
+//         }
+//     }
+
+//     return winner_index;
+// }
+
+void reset_game(Players players[], int n_players){
+    for(int i = 0; i < n_players; i++){
+        players[i].reset_game();
+    }
+}
+
 vector<float> count_cards(vector<int> players_cards){
     vector<float> rep_cards;
     for(int i = 0; i < 20; i++)
@@ -72,6 +113,7 @@ double sigmoid(double x)
 
 bool make_choice(float NN_output){
     float drawOutput = sigmoid(NN_output);
+    cout<<drawOutput<<endl;
     if (drawOutput >= 0.5)
     {
         return true;
@@ -87,26 +129,31 @@ bool make_choice(float NN_output){
 int main()
 {
     //Game setup  
+    int game_count = 0;
+    int round_count = 0;
     Game game;
     Players players[n_players];
-    NN nn;
     game.make_deck();  
-    int card_index = game.resuffle(100);
-    nn.MutateNetwork(MutateChance, MutateAmount);
+    game.resuffle(true);
 
 
     vector<float> NN_output;
     vector<float> NN_inputs;
 
+do
+{
 
+    reset_game(players, n_players);
+     game.resuffle(true);
+     round_count = 0;
     // Game process  
     do{
-           
-        for (int i = 0; i < n_players; i++) {
-            players[i].reset_round();
-            players[i].getCards(game.deck[card_index]);
             
-            card_index++;
+        for (int i = 0; i < n_players; i++) { 
+            game.resuffle(false);
+            players[i].reset_round();
+            players[i].getCards(game.deck[game.card_index]);           
+            game.card_index++;
          }
     
         //Round of the game
@@ -114,14 +161,13 @@ int main()
 
              for (int i = 0; i < n_players; i++) {
 
+                // Skip players who have already ended their round
                 if (players[i].round_end) 
                     continue;
-                 
-                cout<<game.deck[0];
-                cout<<game.deck[1];    
+
+                    
                 //print the cards and ask if they want to draw another card
                 players[i].print_cards(i);
-
 
                 NN_inputs = calc_NN_input(players[i]);
                 NN_output = players[i].nn.Brain(NN_inputs);
@@ -134,19 +180,21 @@ int main()
 
                 //Clear NN
                 players[i].nn.clear_NN();
-                cout<<NN_output[0]<<endl;
+  
 
                 bool NN_choice = make_choice(NN_output[0]);
                 cout<<"NN Choice: "<<NN_choice<<endl;
                 //TODO:add the NN_output to the decision
 
+                game.resuffle(false);
+
                 if (!players[i].want_card(NN_choice)) {
-                    players[i].getCards(game.deck[card_index]);
-                    card_index++;
+                    players[i].getCards(game.deck[game.card_index]);
+                    game.card_index++;
                     players[i].print_cards(i);
                 }
 
-                card_index = game.resuffle(card_index);
+                game.resuffle(false);
                 
                 // Check if the deck is empty and reshuffle if necessary
 
@@ -165,18 +213,18 @@ int main()
 
 
         // Calculate scores for each player
-        for (int i = 0; i < n_players; i++)
-            {
+        for (int i = 0; i < n_players; i++)      
                 if(!players[i].lose)
                  players[i].calc_score();
-            }
-       
+            
+       round_count++;          
+       if (round_count >= 200) {
+            mutate_ALL(n_players, players);
+            round_count++;
+        }
         
     }while (game.game_end(n_players, players) == false);
 
-    for(int i = 0; i < n_players; i++){
-        players[i].Mutate();
-    }
 
 
     cout << "Final Scores: " << endl;
@@ -185,5 +233,11 @@ int main()
         cout << "Player " << i + 1 << ": " << players[i].score << endl;
     }
     cout << "Game Over!" << endl;
+
+  // int winner_index = check_winner(n_players, players);
+
+  game_count++;
+ } while(game_count < 100);
+
     return 0;
 }

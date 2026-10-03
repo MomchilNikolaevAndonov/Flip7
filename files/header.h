@@ -43,9 +43,10 @@ public:
 
 class Game{
     private:
-   
+    
 
   public:
+    int card_index = 0;
     int deck[92];
     
     Game();
@@ -54,7 +55,7 @@ class Game{
     
     void make_deck();
   
-    int resuffle(int card_index);
+    void resuffle(bool force_reshuffle);
    
 };
 
