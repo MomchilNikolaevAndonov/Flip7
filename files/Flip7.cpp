@@ -200,6 +200,7 @@ do
                 excluded_cards = find_excluded_cards(players, n_players);
                 game.resuffle(false, excluded_cards);
 
+                // Ask the player if they want to draw another card
                 if (!players[i].want_card(NN_choice)) {
                     players[i].getCards(game.deck[game.card_index]);
                     game.card_index++;
