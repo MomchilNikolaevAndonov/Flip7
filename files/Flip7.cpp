@@ -95,6 +95,7 @@ vector<float> calc_NN_input(Players player){
 
 
     //makes sutable NN_inputs
+    
     for(int i = 0; i < rep_cards.size(); i++){
         NN_inputs[i] = NN_inputs[i] / rep_cards[i];
     }
