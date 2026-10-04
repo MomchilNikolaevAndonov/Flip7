@@ -18,6 +18,16 @@ int size_of_arr(int arr[]){
 }
 */
 
+vector<int> find_excluded_cards(Players players[], int n_players){
+    vector<int> excluded_cards;
+    for (int i = 0; i < n_players; i++) {
+        for (int j = 0; j < players[i].cards.size(); j++) {
+            excluded_cards.push_back(players[i].cards[j]);
+        }
+    }
+    return excluded_cards;
+}
+
 void natural_selection(Players players[], int n_players){
     // Sort players based on their scores in descending order
     sort(players, players + n_players, [](const Players& a, const Players& b) {
@@ -131,10 +141,11 @@ int main()
     //Game setup  
     int game_count = 0;
     int round_count = 0;
+    vector<int> excluded_cards;
     Game game;
     Players players[n_players];
     game.make_deck();  
-    game.resuffle(true);
+    game.resuffle(true, find_excluded_cards(players, n_players));
 
 
     vector<float> NN_output;
@@ -144,13 +155,13 @@ do
 {
 
     reset_game(players, n_players);
-     game.resuffle(true);
+     game.resuffle(true, find_excluded_cards(players, n_players));
      round_count = 0;
     // Game process  
     do{
             
         for (int i = 0; i < n_players; i++) { 
-            game.resuffle(false);
+            game.resuffle(false, find_excluded_cards(players, n_players));
             players[i].reset_round();
             players[i].getCards(game.deck[game.card_index]);           
             game.card_index++;
@@ -186,7 +197,8 @@ do
                 cout<<"NN Choice: "<<NN_choice<<endl;
                 //TODO:add the NN_output to the decision
 
-                game.resuffle(false);
+                excluded_cards = find_excluded_cards(players, n_players);
+                game.resuffle(false, excluded_cards);
 
                 if (!players[i].want_card(NN_choice)) {
                     players[i].getCards(game.deck[game.card_index]);
@@ -194,7 +206,7 @@ do
                     players[i].print_cards(i);
                 }
 
-                game.resuffle(false);
+                game.resuffle(false, find_excluded_cards(players, n_players));
                 
                 // Check if the deck is empty and reshuffle if necessary
 

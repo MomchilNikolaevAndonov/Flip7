@@ -20,6 +20,8 @@ public:
 
     void getCards(int card);
 
+    void find_excluded_cards(Players players[], int n_players);
+
     void calc_score();
 
     void check_lose();
@@ -47,15 +49,18 @@ class Game{
 
   public:
     int card_index = 0;
-    int deck[92];
+    vector<int> reff_deck;
+    vector<int> deck;
     
     Game();
+
+    void del_excluded_cards(vector<int>);
 
     bool game_end(int n_players, Players players[]);
     
     void make_deck();
   
-    void resuffle(bool force_reshuffle);
+    void resuffle(bool force_reshuffle, vector<int> excluded_cards);
    
 };
 
