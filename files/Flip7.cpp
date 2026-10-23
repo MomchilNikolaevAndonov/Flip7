@@ -107,7 +107,7 @@ vector<float> calc_NN_input(Players player){
 bool end_round(int n_players, Players players[]){
 
     for (int i = 0; i < n_players; i++)
-    {
+    {    
         if (!players[i].round_end) {
             return false;
         }
@@ -159,14 +159,15 @@ do
      round_count = 0;
     // Game process  
     do{
-            
+             
         for (int i = 0; i < n_players; i++) { 
             game.resuffle(false, find_excluded_cards(players, n_players));
             players[i].reset_round();
-            players[i].getCards(game.deck[game.card_index]);           
+            players[i].getCards(game.deck.back());     
+            game.deck.pop_back();        
             game.card_index++;
          }
-    
+
         //Round of the game
         do {
 
@@ -197,16 +198,18 @@ do
                 cout<<"NN Choice: "<<NN_choice<<endl;
                 //TODO:add the NN_output to the decision
 
+
                 excluded_cards = find_excluded_cards(players, n_players);
                 game.resuffle(false, excluded_cards);
 
                 // Ask the player if they want to draw another card
                 if (!players[i].want_card(NN_choice)) {
-                    players[i].getCards(game.deck[game.card_index]);
+                    players[i].getCards(game.deck.back());
+                    game.deck.pop_back();
                     game.card_index++;
                     players[i].print_cards(i);
                 }
-
+                
                 game.resuffle(false, find_excluded_cards(players, n_players));
                 
                 // Check if the deck is empty and reshuffle if necessary
@@ -221,15 +224,18 @@ do
                 
                 cout << endl;
             }
+
         } while (!end_round(n_players, players)); 
 
 
-
+  
         // Calculate scores for each player
         for (int i = 0; i < n_players; i++)      
                 if(!players[i].lose)
                  players[i].calc_score();
-            
+
+
+                    
        round_count++;          
        if (round_count >= 200) {
             mutate_ALL(n_players, players);
@@ -250,7 +256,7 @@ do
   // int winner_index = check_winner(n_players, players);
 
   game_count++;
- } while(game_count < 100);
+ } while(game_count < 10);
 
     return 0;
 }

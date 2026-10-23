@@ -47,7 +47,7 @@ using namespace std;
         // 2. Initialize the standard Mersenne Twister engine with the seed
         mt19937 g(rd());
 
-        if (force_reshuffle || card_index >= 92) {
+        if (force_reshuffle || card_index >= 92 || deck.size() == 0) {
             cout << "Deck is empty. Reshuffling..." << endl;
             deck = reff_deck; // Reset the deck to the reference deck
             del_excluded_cards(excluded_cards);
