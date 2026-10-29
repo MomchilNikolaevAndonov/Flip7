@@ -57,4 +57,45 @@ using namespace std;
         
     }
 
-    
+    vector<float> Game::count_cards(vector<int> players_cards){
+    vector<float> rep_cards;
+    for(int i = 0; i < 20; i++)
+        rep_cards.push_back(0);
+
+    for(int i = 0; i < players_cards.size(); i++)
+    {       
+        rep_cards.at(players_cards[i])++; 
+               
+    }
+  
+    return rep_cards;
+    }
+
+    void Game::reset_game(Players players[], int n_players){
+    for(int i = 0; i < n_players; i++){
+        players[i].reset_game();
+    }
+}
+
+
+vector<int> Game::find_excluded_cards(Players players[], int n_players){
+    vector<int> excluded_cards;
+    for (int i = 0; i < n_players; i++) {
+        for (int j = 0; j < players[i].cards.size(); j++) {
+            excluded_cards.push_back(players[i].cards[j]);
+        }
+    }
+    return excluded_cards;
+}
+
+bool Game::end_round(int n_players, Players players[]){
+
+    for (int i = 0; i < n_players; i++)
+    {    
+        if (!players[i].round_end) {
+            return false;
+        }
+       
+    }
+    return true;
+}

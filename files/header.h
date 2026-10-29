@@ -61,6 +61,14 @@ class Game{
     void make_deck();
   
     void resuffle(bool force_reshuffle, vector<int> excluded_cards);
+
+    static vector<float> count_cards(vector<int> players_cards);
+
+    static void reset_game(Players players[], int n_players);
+
+    static vector<int> find_excluded_cards(Players players[], int n_players);
+
+    static bool end_round(int n_players, Players players[]);
    
 };
 
